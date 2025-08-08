@@ -96,7 +96,8 @@ export default function PrayerTimesPage() {
   // Obtenir les données du jour actuel
   const today = new Date();
   const dateKey = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-  const todayData: DayData = (prayerData as any)[dateKey]
+  // const todayData: DayData = (prayerData as any)[dateKey]
+  const todayData: DayData = (prayerData as Record<string, DayData>)[dateKey]
 
   // Calculer la prochaine prière
   useEffect(() => {
