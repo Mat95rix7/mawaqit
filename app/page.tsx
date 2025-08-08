@@ -35,7 +35,8 @@ const translations = {
     },
     solarInfo: "Informations Solaires",
     sunrise: "Lever du Soleil",
-    sunset: "Coucher du Soleil"
+    sunset: "Coucher du Soleil",
+    dataUnavailable: "Données de prière non disponibles pour aujourd'hui"
   },
   ar: {
     title: "مواقيت الصلاة",
@@ -50,7 +51,8 @@ const translations = {
     },
     solarInfo: "معلومات شمسية",
     sunrise: "شروق الشمس",
-    sunset: "غروب الشمس"
+    sunset: "غروب الشمس",
+    dataUnavailable: "بيانات الصلاة غير متوفرة لهذا اليوم"
   }
 };
 
@@ -64,6 +66,13 @@ export default function PrayerTimesPage() {
     fontFamily: "'Noto Sans Arabic', 'Cairo', 'Amiri', Arial, sans-serif",
     direction: language === 'ar' ? 'rtl' as const : 'ltr' as const,
     textAlign: language === 'ar' ? 'right' as const : 'left' as const,
+    fontWeight: '500'
+  };
+
+  const arabicStyleCentered = {
+    fontFamily: "'Noto Sans Arabic', 'Cairo', 'Amiri', Arial, sans-serif",
+    direction: language === 'ar' ? 'rtl' as const : 'ltr' as const,
+    textAlign: 'center' as const,
     fontWeight: '500'
   };
 
@@ -96,11 +105,30 @@ export default function PrayerTimesPage() {
   // Obtenir les données du jour actuel
   const today = new Date();
   const dateKey = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-  // const todayData: DayData = (prayerData as any)[dateKey]
-  const todayData: DayData = (prayerData as Record<string, DayData>)[dateKey]
+  const todayData: DayData | undefined = (prayerData as Record<string, DayData>)[dateKey];
+
+  // Protection contre les données manquantes
+  const currentTranslations = translations[language];
+  
+  if (!todayData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center" style={containerStyle}>
+        <div className="text-center p-8 bg-white/60 backdrop-blur-sm rounded-3xl shadow-xl">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4" style={arabicStyle}>
+            {currentTranslations.title}
+          </h1>
+          <p className="text-lg text-gray-600" style={arabicStyle}>
+            {currentTranslations.dataUnavailable}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // Calculer la prochaine prière
   useEffect(() => {
+    if (!todayData?.prayers) return;
+    
     const now = currentTime;
     const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     
@@ -113,9 +141,10 @@ export default function PrayerTimesPage() {
       { name: 'Isha', time: todayData.prayers.Isha },
     ];
 
-    const nextPrayerName = prayers.find(prayer => prayer.time > currentTimeStr)?.name || 'Fajr';
+    const nextPrayerFound = prayers.find(prayer => prayer.time > currentTimeStr);
+    const nextPrayerName = nextPrayerFound ? nextPrayerFound.name : 'Fajr';
     setNextPrayer(nextPrayerName);
-  }, [currentTime, todayData.prayers]);
+  }, [currentTime, todayData?.prayers]);
 
   // Dates
   const hijriDate = getHijriDate(today);
@@ -126,9 +155,7 @@ export default function PrayerTimesPage() {
     day: 'numeric'
   });
 
-  const currentTranslations = translations[language];
-
-  const prayerIcons: { [key: string]: 'fajr' | 'chorouk' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' } = {
+  const prayerIcons: Record<string, 'fajr' | 'chorouk' | 'dhuhr' | 'asr' | 'maghrib' | 'isha'> = {
     Fajr: 'fajr',
     Chorouk: 'chorouk',
     Dhuhr: 'dhuhr',
@@ -139,29 +166,29 @@ export default function PrayerTimesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100" style={containerStyle}>
-      {/* Bouton de changement de langue - Position fixe */}
-      <div className="fixed top-4 z-50 right-4">
-        <button
-          onClick={toggleLanguage}
-          className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full p-3 shadow-lg transition-all duration-300 flex items-center space-x-2 border border-white/30"
-        >
-          <span className="font-semibold">
-            {language === 'fr' ? 'عربي' : 'FR'}
-          </span>
-        </button>
-      </div>
-
       {/* Header avec informations générales */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700">
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=&quot;80&quot; height=&quot;80&quot; viewBox=&quot;0 0 80 80&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Ccircle cx=&quot;40&quot; cy=&quot;40&quot; r=&quot;2.5&quot; fill=&quot;white&quot; fill-opacity=&quot;0.12&quot;/%3E%3Ccircle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;1.5&quot; fill=&quot;white&quot; fill-opacity=&quot;0.10&quot;/%3E%3Ccircle cx=&quot;60&quot; cy=&quot;60&quot; r=&quot;1.5&quot; fill=&quot;white&quot; fill-opacity=&quot;0.10&quot;/%3E%3Cpath d=&quot;M40 10 L44 20 L54 22 L46 28 L48 38 L40 32 L32 38 L34 28 L26 22 L36 20 Z&quot; fill=&quot;white&quot; fill-opacity=&quot;0.08&quot;/%3E%3C/svg%3E')] opacity-40 pointer-events-none" />
         
         <div className="relative max-w-7xl mx-auto px-4 py-6">
+          {/* Bouton de changement de langue - Dans le header */}
+          <div className="absolute top-4 right-4 z-10">
+            <button
+              onClick={toggleLanguage}
+              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full p-3 shadow-lg transition-all duration-300 flex items-center space-x-2 border border-white/30"
+            >
+              <span className="font-semibold">
+                {language === 'fr' ? 'عربي' : 'FR'}
+              </span>
+            </button>
+          </div>
+
           <div className="text-center mb-8 pt-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center" style={arabicStyle}>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 text-center" style={arabicStyleCentered}>
               {currentTranslations.title}
             </h1>
-            <p className="text-blue-100 text-lg" style={arabicStyle}>
+            <p className="text-blue-100 text-lg" style={arabicStyleCentered}>
               {currentTranslations.subtitle}
             </p>
           </div>
@@ -174,12 +201,11 @@ export default function PrayerTimesPage() {
                   hour: '2-digit',
                   minute: '2-digit',
                   second: '2-digit',
+                  hour12: false
                 })}
               </span>
               <span className="mt-2 text-lg md:text-xl font-semibold text-blue-100 transition-all duration-500" style={arabicStyle}>
-                {showHijri
-                  ? hijriDate
-                  : gregorianDate}
+                {showHijri ? hijriDate : gregorianDate}
               </span>
             </div>
           </div>
@@ -192,17 +218,22 @@ export default function PrayerTimesPage() {
           <div className="grid grid-cols-5 gap-1 xs:gap-2 sm:gap-4 md:gap-6">
             {Object.entries(todayData.prayers)
               .filter(([prayer]) => prayer !== 'Chorouk')
-              .map(([prayer, time]) => (
-                <div key={prayer} className="min-w-0">
-                  <PrayerCard
-                    name={currentTranslations.prayerNames[prayer as keyof typeof currentTranslations.prayerNames]}
-                    time={time}
-                    isNext={prayer === nextPrayer}
-                    icon={prayerIcons[prayer]}
-                    language={language}
-                  />
-                </div>
-              ))}
+              .map(([prayer, time]) => {
+                const prayerName = currentTranslations.prayerNames[prayer as keyof typeof currentTranslations.prayerNames];
+                const prayerIcon = prayerIcons[prayer];
+                
+                return (
+                  <div key={prayer} className="min-w-0">
+                    <PrayerCard
+                      name={prayerName}
+                      time={time}
+                      isNext={prayer === nextPrayer}
+                      icon={prayerIcon}
+                      language={language}
+                    />
+                  </div>
+                );
+              })}
           </div>
         </div>
 
@@ -235,7 +266,6 @@ export default function PrayerTimesPage() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Import des polices arabes */}

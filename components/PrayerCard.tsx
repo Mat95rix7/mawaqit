@@ -7,6 +7,7 @@ interface PrayerCardProps {
   time: string;
   isNext: boolean;
   icon: 'fajr' | 'chorouk' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+  language: "fr" | "ar";
 }
 
 const prayerIcons = {
@@ -27,20 +28,29 @@ const prayerColors = {
   isha: 'from-blue-600 to-indigo-700',
 };
 
-export default function PrayerCard({ name, time, isNext, icon }: PrayerCardProps) {
+export default function PrayerCard({ name, time, isNext, icon, language }: PrayerCardProps) {
   const IconComponent = prayerIcons[icon];
   const gradientColor = prayerColors[icon];
 
+  // Style conditionnel basé sur la langue
+  const containerStyle = {
+    direction: language === 'ar' ? 'rtl' as const : 'ltr' as const,
+    fontFamily: language === 'ar' ? "'Noto Sans Arabic', 'Cairo', 'Amiri', Arial, sans-serif" : 'inherit'
+  };
+
   return (
-    <div className={`
-      relative overflow-hidden rounded-xl sm:rounded-2xl 
-      p-3 sm:p-4 md:p-6 
-      transition-all duration-300 hover:scale-105 hover:shadow-2xl
-      ${isNext 
-        ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xl ring-2 sm:ring-4 ring-emerald-200' 
-        : 'bg-white/80 backdrop-blur-sm border border-gray-200 hover:bg-white shadow-lg'
-      }
-    `}>
+    <div 
+      className={`
+        relative overflow-hidden rounded-xl sm:rounded-2xl 
+        p-3 sm:p-4 md:p-6 
+        transition-all duration-300 hover:scale-105 hover:shadow-2xl
+        ${isNext 
+          ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xl ring-2 sm:ring-4 ring-emerald-200' 
+          : 'bg-white/80 backdrop-blur-sm border border-gray-200 hover:bg-white shadow-lg'
+        }
+      `}
+      style={containerStyle}
+    >
       
       <div className="flex items-center justify-center mb-2 sm:mb-3 md:mb-4">
         <div className={`
