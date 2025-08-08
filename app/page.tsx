@@ -85,6 +85,15 @@ export default function PrayerTimesPage() {
     setLanguage(prev => prev === 'fr' ? 'ar' : 'fr');
   };
 
+    // Obtenir les données du jour actuel
+    const today = new Date();
+    const dateKey = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const todayData: DayData | undefined = (prayerData as Record<string, DayData>)[dateKey];
+  
+    // Protection contre les données manquantes
+    const currentTranslations = translations[language];
+    
+
   // Mise à jour de l'heure toutes les secondes
   useEffect(() => {
     const timer = setInterval(() => {
@@ -102,14 +111,28 @@ export default function PrayerTimesPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Obtenir les données du jour actuel
-  const today = new Date();
-  const dateKey = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-  const todayData: DayData | undefined = (prayerData as Record<string, DayData>)[dateKey];
-
-  // Protection contre les données manquantes
-  const currentTranslations = translations[language];
+    // Calculer la prochaine prière
+    useEffect(() => {
+      if (!todayData?.prayers) return;
+      
+      const now = currentTime;
+      const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      
+      const prayers = [
+        { name: 'Fajr', time: todayData.prayers.Fajr },
+        { name: 'Chorouk', time: todayData.prayers.Chorouk },
+        { name: 'Dhuhr', time: todayData.prayers.Dhuhr },
+        { name: 'Asr', time: todayData.prayers.Asr },
+        { name: 'Maghrib', time: todayData.prayers.Maghrib },
+        { name: 'Isha', time: todayData.prayers.Isha },
+      ];
   
+      const nextPrayerFound = prayers.find(prayer => prayer.time > currentTimeStr);
+      const nextPrayerName = nextPrayerFound ? nextPrayerFound.name : 'Fajr';
+      setNextPrayer(nextPrayerName);
+    }, [currentTime, todayData?.prayers]);
+
+
   if (!todayData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center" style={containerStyle}>
@@ -125,26 +148,7 @@ export default function PrayerTimesPage() {
     );
   }
 
-  // Calculer la prochaine prière
-  useEffect(() => {
-    if (!todayData?.prayers) return;
-    
-    const now = currentTime;
-    const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    
-    const prayers = [
-      { name: 'Fajr', time: todayData.prayers.Fajr },
-      { name: 'Chorouk', time: todayData.prayers.Chorouk },
-      { name: 'Dhuhr', time: todayData.prayers.Dhuhr },
-      { name: 'Asr', time: todayData.prayers.Asr },
-      { name: 'Maghrib', time: todayData.prayers.Maghrib },
-      { name: 'Isha', time: todayData.prayers.Isha },
-    ];
 
-    const nextPrayerFound = prayers.find(prayer => prayer.time > currentTimeStr);
-    const nextPrayerName = nextPrayerFound ? nextPrayerFound.name : 'Fajr';
-    setNextPrayer(nextPrayerName);
-  }, [currentTime, todayData?.prayers]);
 
   // Dates
   const hijriDate = getHijriDate(today);
