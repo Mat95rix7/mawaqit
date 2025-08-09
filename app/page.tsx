@@ -65,7 +65,7 @@ export default function PrayerTimesPage() {
   const arabicStyle = {
     fontFamily: "'Noto Sans Arabic', 'Cairo', 'Amiri', Arial, sans-serif",
     direction: language === 'ar' ? 'rtl' as const : 'ltr' as const,
-    textAlign: language === 'ar' ? 'right' as const : 'left' as const,
+    // textAlign: language === 'ar' ? 'right' as const : 'left' as const,
     fontWeight: '500'
   };
 
@@ -253,7 +253,7 @@ export default function PrayerTimesPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <div className="bg-gradient-to-br from-orange-400 to-pink-500 rounded-2xl p-4 text-white">
-                <h3 className="text-lg font-semibold mb-2" style={arabicStyle}>
+                <h3 className="text-md md:text-lg font-semibold mb-2 text-center" style={arabicStyle}>
                   {currentTranslations.sunrise}
                 </h3>
                 <p className="text-3xl font-bold">{todayData.prayers.Chorouk}</p>
@@ -262,7 +262,7 @@ export default function PrayerTimesPage() {
             
             <div className="text-center">
               <div className="bg-gradient-to-br from-red-400 to-pink-600 rounded-2xl p-4 text-white">
-                <h3 className="text-lg font-semibold mb-2" style={arabicStyle}>
+                <h3 className="text-md md:text-lg font-semibold mb-2 text-center" style={arabicStyle}>
                   {currentTranslations.sunset}
                 </h3>
                 <p className="text-3xl font-bold">{todayData.prayers.Maghrib}</p>
