@@ -22,7 +22,8 @@ export interface MosqueConfig {
     ar: string;
   };
   data: {
-    calendar: Record<number, Record<string, string[]>>;
+    // calendar: Record<number, Record<string, string[]>>;
+    calendar: Record<string, string[]>[];
   };
 }
 

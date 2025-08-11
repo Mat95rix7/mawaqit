@@ -15,7 +15,7 @@ export const mosqueesConfig: Record<string, MosqueConfig> = {
       fr: 'Vauréal',
       ar: 'فوريال'
     },
-    data: vaurealData
+    data: vaurealData as { calendar: Record<string, string[]>[] }
   },
   sidiKhaled: {
     name: {
@@ -26,7 +26,7 @@ export const mosqueesConfig: Record<string, MosqueConfig> = {
       fr: 'Sidi Khaled',
       ar: 'سيدي خالد'
     },
-    data: sidiKhaledData
+    data: sidiKhaledData as { calendar: Record<string, string[]>[] }
   },
   eaubonne: {
     name: {
@@ -37,6 +37,6 @@ export const mosqueesConfig: Record<string, MosqueConfig> = {
       fr: 'Eaubonne',
       ar: 'إوبون'
     },
-    data: ermontData
+    data: ermontData as { calendar: Record<string, string[]>[] }
   }
 };
