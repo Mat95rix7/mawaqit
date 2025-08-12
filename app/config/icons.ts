@@ -1,4 +1,4 @@
-import { Sun, Moon, Star, Sunrise, Sunset } from 'lucide-react';
+import { Sun, Moon, Sunrise, Sunset } from 'lucide-react';
 
 export const prayerIconsMapping = {
   Fajr: Moon,

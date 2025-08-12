@@ -4,6 +4,8 @@ import type { MosqueConfig } from '../types/prayer';
 import vaurealData from '../data/vaureal.json'
 import sidiKhaledData from '../data/sidi_khaled.json'
 import ermontData from '../data/eaubonne.json'
+import algerData from '../data/alger.json'
+import oranData from '../data/oran.json'
 
 export const mosqueesConfig: Record<string, MosqueConfig> = {
   vaureal: {
@@ -28,7 +30,29 @@ export const mosqueesConfig: Record<string, MosqueConfig> = {
     },
     data: sidiKhaledData as { calendar: Record<string, string[]>[] }
   },
-  eaubonne: {
+  alger: {
+    name: {
+      fr: 'Mosquée d\'Alger',
+      ar: 'مسجد الجزائر '
+    },
+    city: {
+      fr: 'Alger',
+      ar: 'الجزائر '
+    },
+    data: algerData as { calendar: Record<string, string[]>[] }
+  },
+  oran: {
+    name: {
+      fr: 'Mosquée d\'Oran',
+      ar: 'مسجد وهران '
+    },
+    city: {
+      fr: 'Oran',
+      ar: 'وهران '
+    },
+    data: oranData as { calendar: Record<string, string[]>[] }
+  },
+    eaubonne: {
     name: {
       fr: 'Mosquée d\'Eaubonne',
       ar: 'مسجد إوبون'
@@ -38,5 +62,5 @@ export const mosqueesConfig: Record<string, MosqueConfig> = {
       ar: 'إوبون'
     },
     data: ermontData as { calendar: Record<string, string[]>[] }
-  }
+  },
 };

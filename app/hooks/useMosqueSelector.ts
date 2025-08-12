@@ -1,19 +1,13 @@
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 
-export function useMosqueSelector(initialMosque: string = 'vaureal') {
-  const [selectedMosque, setSelectedMosque] = useState<string>(initialMosque);
+export function useMosqueSelector(initialMosque: string) {
+  const [selectedMosque, setSelectedMosque] = useState(initialMosque);
   const [showMosqueSelector, setShowMosqueSelector] = useState(false);
 
   const handleMosqueChange = (mosqueKey: string) => {
     setSelectedMosque(mosqueKey);
-    setShowMosqueSelector(false);
-  };
-
-  const toggleMosqueSelector = () => {
-    setShowMosqueSelector(!showMosqueSelector);
-  };
-
-  const closeMosqueSelector = () => {
+    Cookies.set('selectedMosque', mosqueKey, { expires: 365 });
     setShowMosqueSelector(false);
   };
 
@@ -21,7 +15,7 @@ export function useMosqueSelector(initialMosque: string = 'vaureal') {
     selectedMosque,
     showMosqueSelector,
     handleMosqueChange,
-    toggleMosqueSelector,
-    closeMosqueSelector
+    toggleMosqueSelector: () => setShowMosqueSelector(!showMosqueSelector),
+    closeMosqueSelector: () => setShowMosqueSelector(false),
   };
 }

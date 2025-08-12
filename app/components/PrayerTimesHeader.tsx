@@ -61,7 +61,7 @@ export default function PrayerTimesHeader({
           {/* Affichage de la mosquée actuelle */}
           <div className="inline-flex items-center space-x-2 bg-yellow-500 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
             <span className="text-gray-900 font-bold text-md" style={arabicStyle}>
-              {currentMosque.name[language]}
+              {currentMosque?.name[language]}
             </span>
           </div>
         </div>

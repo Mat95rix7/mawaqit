@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { PrayerTimes, MosqueData, Language } from '../types/prayer';
+import type { MosqueData, Language } from '../types/prayer';
 import { mosqueesConfig } from '../config/mosques';
 
 export function usePrayerTimes(selectedMosque: string, language: Language) {
